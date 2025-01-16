@@ -30,6 +30,15 @@ app.post('/users/new', async (req: Request, res: Response) => {
         });
         res.status(201).json(newUser);
     } catch (e) {
-        res.status(400)
+        res.status(500).json({e: "Error creating new user"});
     }
 });
+
+app.get('/users', async (req: Request, res: Response) => {
+    try {
+        const users = await prisma.user.findMany();
+        res.status(200).json(users);
+    } catch (e) {
+        res.status(500).json({error: "Error fetching users"});
+    }
+})
