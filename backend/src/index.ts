@@ -59,6 +59,11 @@ app.post('/users/new', async (req: Request, res: Response) => {
           return res.status(409).json({ error: Errors.EmailAlreadyInUse, data: undefined, success: false })
         }
 
+        const existingUsername = await prisma.user.findFirst({ where: { username: userData.username } });
+        if (existingUsername) {
+            return res.status(409).json({ error: Errors.UsernameAlreadyTaken, data: undefined, success: false })
+        }
+
         const newUser = await prisma.user.create({
             data: {
                 email: userData.email,
