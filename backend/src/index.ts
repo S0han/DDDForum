@@ -82,7 +82,12 @@ app.post('/users/new', async (req: Request, res: Response) => {
 });
 
 app.post('/users/edit/:userId', async (req: Request, res: Response) => {
-    
+    try {
+        
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: Errors.ServerError, data: undefined, success: false });
+    }
 });
 
 app.get('/users', async (req: Request, res: Response) => {
