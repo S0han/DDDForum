@@ -56,12 +56,12 @@ app.post('/users/new', async (req: Request, res: Response) => {
 
         const existingUserByEmail = await prisma.user.findFirst({ where: { email: userData.email }});
         if (existingUserByEmail) {
-          return res.status(409).json({ error: Errors.EmailAlreadyInUse, data: undefined, success: false })
+          return res.status(409).json({ error: Errors.EmailAlreadyInUse, data: undefined, success: false });
         }
 
         const existingUsername = await prisma.user.findFirst({ where: { username: userData.username } });
         if (existingUsername) {
-            return res.status(409).json({ error: Errors.UsernameAlreadyTaken, data: undefined, success: false })
+            return res.status(409).json({ error: Errors.UsernameAlreadyTaken, data: undefined, success: false });
         }
 
         const newUser = await prisma.user.create({
@@ -83,7 +83,18 @@ app.post('/users/new', async (req: Request, res: Response) => {
 
 app.post('/users/edit/:userId', async (req: Request, res: Response) => {
     try {
-        
+        const userId = parseInt(req.params.userId);
+        const user = await prisma.user.findFirst({ where: { id: userId } });
+        if (!user) {
+            return res.status(404).json({ error: Errors.UserNotFound, data: undefined, success: false });
+        }
+
+        const existingUsername = await prisma.user.findFirst({ where: { username: req.body.username } });
+        if (existingUsername) {
+            return res.status(409).json({ error: Errors.UsernameAlreadyTaken, data: undefined, success: false });
+        }        
+
+        res.status(200).json({ error: undefined, data: user, success: true });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: Errors.ServerError, data: undefined, success: false });
