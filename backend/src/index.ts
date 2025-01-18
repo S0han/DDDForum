@@ -92,8 +92,13 @@ app.post('/users/edit/:userId', async (req: Request, res: Response) => {
         const existingUsername = await prisma.user.findFirst({ where: { username: req.body.username } });
         if (existingUsername) {
             return res.status(409).json({ error: Errors.UsernameAlreadyTaken, data: undefined, success: false });
-        }        
+        }
 
+        const existingUserByEmail = await prisma.user.findFirst({ where: { email: req.body.email } });
+        if (existingUserByEmail) {
+            return res.status(409).json({ error: Errors.EmailAlreadyInUse, data: undefined, success: false });
+        }
+ 
         res.status(200).json({ error: undefined, data: user, success: true });
     } catch (error) {
         console.error(error);
