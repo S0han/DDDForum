@@ -83,6 +83,14 @@ app.post('/users/new', async (req: Request, res: Response) => {
 
 app.post('/users/edit/:userId', async (req: Request, res: Response) => {
     try {
+        
+        const keyIsMissing = isMissingKeys(req.body, [
+            'email', 'firstName', 'lastName', 'username'
+        ])
+        if (keyIsMissing) {
+            return res.status(400).json({ error: Errors.ValidationError, data: undefined, success: false });
+        }
+        
         const userId = parseInt(req.params.userId);
         const user = await prisma.user.findFirst({ where: { id: userId } });
         if (!user) {
