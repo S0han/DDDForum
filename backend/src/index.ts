@@ -97,17 +97,37 @@ app.post('/users/edit/:userId', async (req: Request, res: Response) => {
             return res.status(404).json({ error: Errors.UserNotFound, data: undefined, success: false });
         }
 
-        const existingUsername = await prisma.user.findFirst({ where: { username: req.body.username } });
+        const existingUsername = await prisma.user.findFirst({ where: { 
+            username: req.body.username, 
+            NOT: { id: userId }
+        } });
         if (existingUsername) {
             return res.status(409).json({ error: Errors.UsernameAlreadyTaken, data: undefined, success: false });
         }
 
-        const existingUserByEmail = await prisma.user.findFirst({ where: { email: req.body.email } });
+        const existingUserByEmail = await prisma.user.findFirst({ where: { 
+            email: req.body.email,
+            NOT: { id: userId }
+        } });
         if (existingUserByEmail) {
             return res.status(409).json({ error: Errors.EmailAlreadyInUse, data: undefined, success: false });
         }
+
+        const userData = req.body;
+
+        const newUser = await prisma.user.update({
+            where: {
+                id: userId
+            },
+            data: {
+                email: userData.email,
+                firstName: userData.firstName,
+                lastName: userData.lastName,
+                username: userData.username,
+            }
+        });
  
-        res.status(200).json({ error: undefined, data: user, success: true });
+        res.status(200).json({ error: undefined, data: parseUserForResponse(newUser), success: true });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: Errors.ServerError, data: undefined, success: false });
