@@ -47,7 +47,6 @@ app.post('/users/new', async (req: Request, res: Response) => {
         const keyIsMissing = isMissingKeys(req.body, 
             ['email', 'firstName', 'lastName', 'username']
         );
-
         if (keyIsMissing) {
             return res.status(400).json({ error: Errors.ValidationError, data: undefined, success: false })
         }
@@ -136,11 +135,20 @@ app.post('/users/edit/:userId', async (req: Request, res: Response) => {
 
 app.get('/users', async (req: Request, res: Response) => {
     try {
-        const users = await prisma.user.findMany();
-        res.status(200).json(users);
+        const email = req.query.email as string;
+        if (!email) {
+            console.log("Email query parameter is missing.");
+            return res.status(400).json({ error: Errors.UserNotFound , data: undefined, success: false });
+        }
+
+        const user = await prisma.user.findFirst({
+            where: { email },
+        });
+
+        res.status(200).json({ error: undefined, data: user, success: true });
     } catch (e) {
-        console.error(e);
-        res.status(500).json({ error: "Error fetching users" });
+        console.error("Error fetching user:", e);
+        res.status(500).json({ error: "ServerError", data: undefined, success: false });
     }
 });
 
