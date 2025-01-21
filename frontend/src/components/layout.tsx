@@ -1,18 +1,15 @@
-import React from 'react';
-import { Content } from './content';
-import { Header } from './header';
+import React from "react";
+import { Header } from "./header";
+import { Content } from "./content";
 
-export const Content = ({ children }: any) => (
-  <div className='content-container'>
-    {children}
-  </div>
-);
+interface LayoutProps {
+  children?: React.ReactNode;
+  user?: { username: string } | null;
+}
 
-export const Layout = ({ children }: any) => (
+export const Layout = ({ children, user = null }: LayoutProps) => (
   <>
-    <Header/>
-    <Content>
-      {children}
-    </Content>
+    <Header user={user} />
+    <Content>{children}</Content>
   </>
 );
