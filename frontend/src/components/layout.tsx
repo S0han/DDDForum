@@ -1,15 +1,14 @@
-import React from "react";
-import { Header } from "./header";
-import { Content } from "./content";
+import React from 'react';
+import { Content } from './content';
+import { Header } from './header'
+import { OverlaySpinner } from './overlaySpinner';
 
-interface LayoutProps {
-  children?: React.ReactNode;
-  user?: { username: string } | null;
-}
-
-export const Layout = ({ children, user = null }: LayoutProps) => (
+export const Layout = ({ children }: any) => (
   <>
-    <Header user={user} />
-    <Content>{children}</Content>
+    <Header/>
+    <Content>
+      {children}
+    </Content>
+    <OverlaySpinner isActive={false}/>
   </>
-);
+)

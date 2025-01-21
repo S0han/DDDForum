@@ -1,41 +1,27 @@
-import React, { useState } from "react";
 
-export const PostsViewSwitcher: React.FC = () => {
-  const [view, setView] = useState<"popular" | "new">("popular");
+import React, { useState } from 'react';
 
-  const handleViewChange = (newView: "popular" | "new") => {
-    setView(newView);
+export const PostsViewSwitcher = () => {
+  const [postView, setPostsView] = useState("popular");
+
+  const onPostViewSelected = (newView: string) => {
+    setPostsView(newView);
   };
 
   return (
-    <div style={{ display: "flex", justifyContent: "center", margin: "20px 0" }}>
-      <button
-        onClick={() => handleViewChange("popular")}
-        style={{
-          marginRight: "10px",
-          padding: "10px 20px",
-          backgroundColor: view === "popular" ? "#007bff" : "#e0e0e0",
-          color: view === "popular" ? "#fff" : "#000",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-        }}
+    <div className="posts-view-switcher flex">
+      <div
+        onClick={() => onPostViewSelected("popular")}
+        className={`${postView === "popular" ? "active" : ""}`}
       >
         Popular
-      </button>
-      <button
-        onClick={() => handleViewChange("new")}
-        style={{
-          padding: "10px 20px",
-          backgroundColor: view === "new" ? "#007bff" : "#e0e0e0",
-          color: view === "new" ? "#fff" : "#000",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-        }}
+      </div>
+      <div
+        onClick={() => onPostViewSelected("new")}
+        className={`${postView === "new" ? "active" : ""}`}
       >
         New
-      </button>
+      </div>
     </div>
   );
 };

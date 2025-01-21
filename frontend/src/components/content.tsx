@@ -1,7 +1,9 @@
-import React from 'react';
 
-export const Content: React.FC<React.PropsWithChildren> = ({ children }) => (
-  <div className="content-container">
+import React from 'react'
+
+
+export const Content = ({ children }: any) => (
+  <div className='content-container'>
     {children}
   </div>
-);
+)

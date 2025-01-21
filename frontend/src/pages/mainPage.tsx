@@ -1,34 +1,36 @@
-import React, { useEffect, useState } from "react";
+
+import { useEffect, useState } from "react";
 import { Layout } from "../components/layout";
 import { PostsList } from "../components/postsList";
 import { PostsViewSwitcher } from "../components/postsViewSwitcher";
 import { api } from "../api";
 
-export const MainPage: React.FC = () => {
-  const [posts, setPosts] = useState<any[]>([]);
+export const MainPage = () => {
+  const [posts, setPosts] = useState([]);
+  const loadPosts = async () => {
+    try {
+      let response = await api.posts.getPosts();
+
+      setPosts(response.data.data.posts)
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await api.get("/posts");
-        setPosts(response.data);
-      } catch (error) {
-        console.error("Error fetching posts:", error);
-        setPosts([
-          { id: 1, title: "First Post", author: "username", comments: 5 },
-          { id: 2, title: "Second Post!", author: "username", comments: 3 },
-          { id: 3, title: "Why DDD?", author: "username", comments: 7 },
-        ]);
-      }
-    };
+    loadPosts();
+  }, [])
 
-    fetchPosts();
-  }, []);
 
   return (
     <Layout>
       <PostsViewSwitcher />
-      <PostsList posts={posts} />
+      <PostsList
+        posts={posts}
+      />
     </Layout>
   );
 };
+
+
+

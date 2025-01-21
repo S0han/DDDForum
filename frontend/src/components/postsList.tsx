@@ -1,7 +1,10 @@
+
 import React from 'react'
 
 import { Link } from "react-router-dom";
+import arrow from "../assets/arrow.svg";
 import moment from 'moment';
+
 
 type Vote = { id: number, postId: number, voteType: 'Upvote' | 'Downvote' };
 type Comment = {};
@@ -26,11 +29,11 @@ export const PostsList = ({ posts }: { posts: Post[] }) => (
       <div className="post-item" key={key}>
         <div className="post-item-votes">
           <div className="post-item-upvote">
-            <img src="/assets/dddforumlogo.png" />
+            <img src={arrow} />
           </div>
           <div>{computeVoteCount(post.votes)}</div>
           <div className="post-item-downvote">
-            <img src="/assets/dddforumlogo.png" />
+            <img src={arrow} />
           </div>
         </div>
         <div className="post-item-content">
