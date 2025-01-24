@@ -152,6 +152,35 @@ app.get('/users', async (req: Request, res: Response) => {
     }
 });
 
+app.get('/posts', async (req: Request, res: Response) => {
+    try {
+        const { sort } = req.query;
+
+        if (sort !== 'recent') {
+            return res.status(400).json({ error: Errors.ClientError, data: undefined, successful: false });
+        }
+        
+        let postsWithVotes = await prisma.post.findMany({
+            include: {
+                votes: true,
+                memberPostedBy: {
+                    include: {
+                        user: true
+                    }
+                },
+                comments: true,
+            },
+            orderBy: {
+                dateCreated: 'desc',
+            }
+        });
+
+        return res.json({ error: undefined, data: { posts: postsWithVotes }, success: true });
+    } catch (error) {
+        return res.status(500).json({ error: Errors.ServerError, data: undefined, success: false });
+    }
+});
+
 const PORT = 3000;
 
 app.listen(PORT, () => {
